@@ -5,6 +5,9 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour {
     [SerializeField]
     public float speed;
+    public int dashspeed;
+    public float startdashTime;
+    private float dashTime;
     private Rigidbody2D rigidbody;
     private Vector2 moveVelocity;
     public Transform R_AttackSpawnPos;
@@ -15,13 +18,15 @@ public class PlayerMovement : MonoBehaviour {
     public Transform SA_AttackSpawnPos;
     public Transform WD_AttackSpawnPos;
     public Transform WA_AttackSpawnPos;
-
+    private bool dash;
 
     public GameObject LeftAttack, RightAttack ,UpAttack, DownAttack,
         LeftUpAttack, RightUpAttack, RightDownAttack, LeftDownAttack;
     // Use this for initialization
     void Start () {
         rigidbody = GetComponent<Rigidbody2D>();
+        dashTime = startdashTime;
+        dash = false;
 	}
 	
 	// Update is called once per frame
@@ -43,12 +48,40 @@ public class PlayerMovement : MonoBehaviour {
             Attack();
         }
 
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            moveVelocity = moveInput.normalized * speed * dashspeed;
+            dashTime -= Time.deltaTime;
+            if (dashTime < 0)
+            {
+                dashTime = startdashTime;
+                moveVelocity = moveInput.normalized * speed;
+            }
+
+        }
+        
+            rigidbody.MovePosition(rigidbody.position + moveVelocity * Time.deltaTime);
+        
     }
 
-    private void FixedUpdate()
+
+    /*private void FixedUpdate()
     {
+
         rigidbody.MovePosition(rigidbody.position + moveVelocity * Time.fixedDeltaTime);
+
     }
+    private void DashMove()
+    {
+         rigidbody.MovePosition(rigidbody.position + moveVelocity * dashspeed * Time.deltaTime);
+         dashTime -= Time.deltaTime;
+        if (dashTime < 0)
+         {
+            dash = false;
+         }
+    }*/
+
+    
 
     private string face;
     
