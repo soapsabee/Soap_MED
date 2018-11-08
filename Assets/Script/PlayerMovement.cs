@@ -19,22 +19,31 @@ public class PlayerMovement : MonoBehaviour {
     public Transform WD_AttackSpawnPos;
     public Transform WA_AttackSpawnPos;
     private bool dash;
-
+    [SerializeField]
+    private StatBar mana;
+    private float initmana = 100;
+    
+    
     public GameObject LeftAttack, RightAttack ,UpAttack, DownAttack,
         LeftUpAttack, RightUpAttack, RightDownAttack, LeftDownAttack;
     // Use this for initialization
-    void Start () {
+    private void Awake()
+    {
+        StatBar mana = FindObjectOfType<StatBar>();
         rigidbody = GetComponent<Rigidbody2D>();
+        mana.initialized(initmana, initmana);
+        
         dashTime = startdashTime;
         dash = false;
-	}
+    }
+    
 	
 	// Update is called once per frame
 	void Update () {
 
         Vector2 moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         moveVelocity = moveInput.normalized * speed;
-        print(moveInput);
+        
         /* print(moveInput);
          if(Input.GetAxisRaw("Horizontal") == 0.0 && Input.GetAxisRaw("Vertical") == 1.0)
          {
@@ -48,8 +57,9 @@ public class PlayerMovement : MonoBehaviour {
             Attack();
         }
 
-        if (Input.GetKeyDown(KeyCode.H))
+        if (Input.GetKeyDown(KeyCode.H) && mana.MyCurrentValue > 0)
         {
+            mana.MyCurrentValue -= 10;
             moveVelocity = moveInput.normalized * speed * dashspeed;
             dashTime -= Time.deltaTime;
             if (dashTime < 0)
